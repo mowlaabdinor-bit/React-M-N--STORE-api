@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext'
 import { useFavorites } from '../context/FavoritesContext'
 
 const linkClass =
-  'relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition hover:bg-indigo-700'
+  'relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition hover:bg-white/10'
 
 const badgeClass =
   'absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-bold'
@@ -17,16 +17,20 @@ function Navbar() {
   const firstName = user?.name.split(' ')[0]
 
   return (
-    <header className="bg-indigo-600 py-3 shadow">
+    <header className="bg-[#0A2540] py-2.5 shadow-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4">
-        <Link to="/" className="text-xl font-bold text-white">
-          Mini Store
+        <Link to="/" className="flex items-center gap-2.5 shrink-0">
+          <img
+            src="/images/navbar-logo.jpg"
+            alt="Somali Mini Mall"
+            className="h-11 w-auto rounded object-contain"
+          />
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-1.5">
           {user ? (
             <>
-              <span className="mr-1 hidden text-sm text-indigo-100 md:inline">
+              <span className="mr-1 hidden text-sm text-slate-200 md:inline">
                 Merhaba, {firstName}
               </span>
 
@@ -55,7 +59,7 @@ function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className="hidden rounded-lg bg-white px-3 py-2 text-sm font-medium text-indigo-700 transition hover:bg-indigo-50 sm:inline-flex"
+                className="hidden rounded-lg bg-[#FF7A00] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#e56d00] sm:inline-flex"
               >
                 Kayıt Ol
               </Link>
@@ -70,7 +74,7 @@ function Navbar() {
             <span aria-hidden="true">🛒</span>
             <span className="hidden sm:inline">Sepet</span>
             {totalItems > 0 && (
-              <span className={`${badgeClass} bg-amber-400 text-gray-900`}>
+              <span className={`${badgeClass} bg-[#FF7A00] text-white`}>
                 {totalItems}
               </span>
             )}
