@@ -1,31 +1,35 @@
 function CategoryFilter({ categories, selected, onSelect }) {
   const base =
-    'whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium capitalize transition'
-  const active = 'border-indigo-600 bg-indigo-600 text-white'
-  const passive =
-    'border-gray-300 bg-white text-gray-700 hover:border-indigo-400 hover:text-indigo-600'
+    'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium capitalize transition'
+  const active = 'bg-brand-orange text-white'
+  const passive = 'text-gray-700 hover:bg-gray-100'
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
-      <button
-        type="button"
-        onClick={() => onSelect('')}
-        className={`${base} ${selected === '' ? active : passive}`}
-      >
-        Tümü
-      </button>
+    <ul className="space-y-1">
+      <li>
+        <button
+          type="button"
+          onClick={() => onSelect('')}
+          aria-current={selected === '' ? 'true' : undefined}
+          className={`${base} ${selected === '' ? active : passive}`}
+        >
+          Tümü
+        </button>
+      </li>
 
       {categories.map((cat) => (
-        <button
-          key={cat.slug}
-          type="button"
-          onClick={() => onSelect(cat.slug)}
-          className={`${base} ${selected === cat.slug ? active : passive}`}
-        >
-          {cat.name}
-        </button>
+        <li key={cat.slug}>
+          <button
+            type="button"
+            onClick={() => onSelect(cat.slug)}
+            aria-current={selected === cat.slug ? 'true' : undefined}
+            className={`${base} ${selected === cat.slug ? active : passive}`}
+          >
+            {cat.name}
+          </button>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
 

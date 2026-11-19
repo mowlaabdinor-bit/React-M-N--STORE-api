@@ -1,17 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import {
-  getCategories,
-  getProducts,
-  getProductsByCategory,
-} from '../api/productService'
-import CategoryFilter from '../components/CategoryFilter'
+import { getProducts, getProductsByCategory } from '../api/productService'
 import Loader from '../components/Loader'
 import ProductList from '../components/ProductList'
-import SearchBar from '../components/SearchBar'
-import SortSelect, { SORT_OPTIONS } from '../components/SortSelect'
+import { SORT_OPTIONS } from '../components/SortSelect'
 
-// Sıralama anahtarı -> karşılaştırma fonksiyonu
 const COMPARATORS = {
   'price-asc': (a, b) => a.price - b.price,
   'price-desc': (a, b) => b.price - a.price,
@@ -26,58 +19,14 @@ function Home() {
   const selectedCategory = searchParams.get('category') ?? ''
   const searchTerm = searchParams.get('q') ?? ''
 
-  // URL'e elle yazılan geçersiz değerler "Önerilen"e düşer
   const rawSort = searchParams.get('sort') ?? ''
   const sort = VALID_SORTS.includes(rawSort) ? rawSort : ''
 
   const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const updateParam = useCallback(
-    (key, value) => {
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev)
-          if (value) next.set(key, value)
-          else next.delete(key)
-          return next
-        },
-        { replace: true },
-      )
-    },
-    [setSearchParams],
-  )
-
-  const handleSearch = useCallback(
-    (value) => updateParam('q', value),
-    [updateParam],
-  )
-  const handleCategory = useCallback(
-    (slug) => updateParam('category', slug),
-    [updateParam],
-  )
-  const handleSort = useCallback(
-    (value) => updateParam('sort', value),
-    [updateParam],
-  )
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    getCategories({ signal: controller.signal })
-      .then(setCategories)
-      .catch((err) => {
-        if (err.name !== 'AbortError') {
-          console.error('Kategoriler yüklenemedi:', err)
-        }
-      })
-
-    return () => controller.abort()
-  }, [])
-
-  // 1. halka: kategori (API'den gelir, sadece kategori değişince çekilir)
+  // Kategori değişince ürünleri çek
   useEffect(() => {
     const controller = new AbortController()
 
@@ -108,7 +57,7 @@ function Home() {
     return () => controller.abort()
   }, [selectedCategory])
 
-  // 2. halka: arama (products veya searchTerm değişince)
+  // Arama
   const filteredProducts = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
     if (!query) return products
@@ -121,35 +70,42 @@ function Home() {
     )
   }, [products, searchTerm])
 
-  // 3. halka: sıralama (filtre sonucu veya sort değişince)
-  // sort() diziyi yerinde değiştirir, bu yüzden önce kopyalıyoruz
+  // Sıralama
   const visibleProducts = useMemo(() => {
     const compare = COMPARATORS[sort]
     if (!compare) return filteredProducts
     return [...filteredProducts].sort(compare)
   }, [filteredProducts, sort])
 
+  const clearCategory = () => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.delete('category')
+        return next
+      },
+      { replace: true },
+    )
+  }
+
   return (
-    <main className="mx-auto max-w-7xl px-4 pt-4 pb-12">
-      <h1 className="mb-3 text-2xl font-bold text-[#0A2540] sm:text-3xl">
-        Ürünler
-      </h1>
+    <main className="mx-auto max-w-7xl px-3 py-6 sm:px-4">
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <h1 className="text-2xl font-bold text-brand-navy sm:text-3xl">
+          Ürünler
+        </h1>
 
-      <div className="mb-4 space-y-3">
-        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-          <div className="sm:flex-1">
-            <SearchBar value={searchTerm} onChange={handleSearch} />
-          </div>
-          <div className="sm:w-72">
-            <SortSelect value={sort} onChange={handleSort} />
-          </div>
-        </div>
-
-        <CategoryFilter
-          categories={categories}
-          selected={selectedCategory}
-          onSelect={handleCategory}
-        />
+        {selectedCategory && (
+          <button
+            type="button"
+            onClick={clearCategory}
+            aria-label="Kategori filtresini kaldır"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-orange/10 px-3 py-1 text-sm font-medium capitalize text-brand-orange transition hover:bg-brand-orange/20"
+          >
+            {selectedCategory.replace(/-/g, ' ')}
+            <span aria-hidden="true">✕</span>
+          </button>
+        )}
       </div>
 
       {loading && <Loader />}
@@ -162,7 +118,7 @@ function Home() {
 
       {!loading && !error && (
         <>
-          <p className="mb-3 text-sm text-gray-500">
+          <p className="mb-4 text-sm text-gray-500">
             {visibleProducts.length} ürün listeleniyor
           </p>
           <ProductList products={visibleProducts} />
