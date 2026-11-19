@@ -130,11 +130,13 @@ function Home() {
   }, [filteredProducts, sort])
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Ürünler</h1>
+    <main className="mx-auto max-w-7xl px-4 pt-4 pb-12">
+      <h1 className="mb-3 text-2xl font-bold text-[#0A2540] sm:text-3xl">
+        Ürünler
+      </h1>
 
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="mb-4 space-y-3">
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
           <div className="sm:flex-1">
             <SearchBar value={searchTerm} onChange={handleSearch} />
           </div>
@@ -160,7 +162,7 @@ function Home() {
 
       {!loading && !error && (
         <>
-          <p className="mb-4 text-sm text-gray-500">
+          <p className="mb-3 text-sm text-gray-500">
             {visibleProducts.length} ürün listeleniyor
           </p>
           <ProductList products={visibleProducts} />
