@@ -12,13 +12,13 @@ function HeroBanner() {
   return (
     <section
       aria-label="Somali Mini Mall Vitrin Banner"
-      className="mx-auto max-w-7xl px-4 pt-6 pb-2"
+      className="mx-auto max-w-7xl px-4 pt-5 pb-2"
     >
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-[#0A2540] shadow-sm">
         <img
           src="/images/hero-banner.jpg"
           alt="Somali Mini Mall"
-          className="block h-auto w-full object-contain"
+          className="block h-36 w-full object-cover object-[50%_42%] sm:h-48 md:h-52"
         />
       </div>
     </section>
